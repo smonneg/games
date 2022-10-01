@@ -60,11 +60,28 @@ Many other applications at Voodoo will use consume this API.
 We are planning to put this project in production. According to you, what are the missing pieces to make this project production ready?
 Please elaborate an action plan.
 
+To be production ready we should:
+- Implement a more robust search. The one currently implemented is very simple/naive, it would be better to rely on a dedicated search engine like ElasticSearch
+- Add some validations around the Game model, to avoid creating the same game in the DB for example
+- Some data in the files need to be fixed. (For example: "Pok\udc8emon GO")  
+- I haven't checked but it is possible that some work on the frontend will be needed to display all the games. We might need pagination
+- When populating, we should user batch insert instead of inserting one by one
+
 #### Question 2:
 Let's pretend our data team is now delivering new files every day into the S3 bucket, and our service needs to ingest those files every day through the populate API. Could you describe a suitable solution to automate this?
 Feel free to propose architectural changes.
+
+To automate the ingest of the file, a simple solution would be to have worker that would read the S3 bucket. We would need to define what would be the frequency the worker would check the bucket, using some sidekiq scheduler tool for example.
+Another more precise solution would be to subscribe to some aws S3 events. In that case we would be notified everytime a new file is created in the bucket, and then we would run the populate once notified.
 
 #### Question 3:
 Both the current database schema and the files dropped in the S3 bucket are not optimal.
 How would you improve them?
 
+For the files I see 2 things: 
+- we should only have the attributes we need
+- the name of the attributes in the file should match the name of the Game model attributes
+- fix the attributes not in UTF-8 (exxample: "Pok\udc8emon GO")
+
+For the schema:
+- We could have some index added (name mainly)

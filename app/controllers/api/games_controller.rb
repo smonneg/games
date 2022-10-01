@@ -23,6 +23,11 @@ class Api::GamesController < ActionController::API
     render json: Game.search(params[:platform], params[:name])
   end
 
+  def populate
+    GameServices.populate
+    render head :ok
+  end
+
   private
 
   def game_attributes

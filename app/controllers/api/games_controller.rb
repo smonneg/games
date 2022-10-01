@@ -19,6 +19,10 @@ class Api::GamesController < ActionController::API
     render json: game
   end
 
+  def search
+    render json: Game.search(params[:platform], params[:name])
+  end
+
   private
 
   def game_attributes
